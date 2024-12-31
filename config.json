@@ -1,0 +1,17 @@
+{
+  "_comment": "Made by @PHV Development, Main Coders - .ultrondev(PHV), CJ(__cj__), Danny(.dannysucksateverything)", 
+  "presence": {
+    "name": "My server",
+    "type": "WATCHING"
+  },
+  "_comment_presence": "Set your presence for the bot like ex- WATCHING, PLAYING, LISTENING, COMPETETING in the type.", 
+  "antiBotGuildId": "YOUR_ANTIBOT_GUILD_ID",
+  "antiLinkGuildId": "1292064378413256786",
+  "LOGGING": {
+    "memberLogs": "1291781282572795925",
+    "roleLogs": "1291781291473371140",
+    "channelLogs": "1291781288511934586",
+    "messageLogs": "1291779607715905710"
+  },
+  "welcomeChannelId": "1305931463933558856"
+}
