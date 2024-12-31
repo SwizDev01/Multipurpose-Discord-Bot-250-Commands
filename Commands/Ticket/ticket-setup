@@ -1,0 +1,86 @@
+# THIS IS A TEST COMMAND WHICH FAILED TO WORK MISERABELY, UPDATES IN FUTURE... 
+
+
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ChannelType } = require('discord.js');
+const { readData, writeData } = require('../../utils/jsonHelper');
+
+module.exports = {
+    data: new SlashCommandBuilder()
+        .setName('setup-ticket')
+        .setDescription('Setup a ticket system.')
+        .addChannelOption(option =>
+            option.setName('channel')
+                .setDescription('Channel for ticket creation.')
+                .setRequired(true))
+        .addChannelOption(option =>
+            option.setName('category')
+                .setDescription('Category to create tickets.')
+                .setRequired(true))
+        .addChannelOption(option =>
+            option.setName('transcriptchannel')
+                .setDescription('Channel for ticket transcripts.')
+                .setRequired(true))
+        .addRoleOption(option =>
+            option.setName('ticket-handlers')
+                .setDescription('Role for users who can manage tickets.')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('description')
+                .setDescription('Description for the ticket system.')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('button')
+                .setDescription('Button label.')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('buttonemoji')
+                .setDescription('Emoji for the button.')
+                .setRequired(true)),
+
+    async execute(interaction) {
+        const { options, guild } = interaction;
+
+        const channel = options.getChannel('channel');
+        const category = options.getChannel('category');
+        const transcriptChannel = options.getChannel('transcriptchannel');
+        const handlersRole = options.getRole('ticket-handlers');
+        const description = options.getString('description');
+        const buttonLabel = options.getString('button');
+        const buttonEmoji = options.getString('buttonemoji');
+
+        // Ensure category type is valid
+        if (category.type !== ChannelType.GuildCategory) {
+            return interaction.reply({ content: 'Please provide a valid category channel.', ephemeral: true });
+        }
+
+        // Save data
+        const data = readData();
+        data[guild.id] = {
+            channelID: channel.id,
+            categoryID: category.id,
+            transcriptChannelID: transcriptChannel.id,
+            handlersRoleID: handlersRole.id,
+            description,
+            buttonLabel,
+            buttonEmoji,
+        };
+        writeData(data);
+
+        // Send embed with button
+        const embed = new EmbedBuilder()
+            .setTitle('🎫 Support Tickets')
+            .setDescription(description)
+            .setColor('Blue');
+
+        const button = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('create-ticket')
+                .setLabel(buttonLabel)
+                .setEmoji(buttonEmoji)
+                .setStyle('Primary')
+        );
+
+        await channel.send({ embeds: [embed], components: [button] });
+        interaction.reply({ content: '✅ Ticket system setup successfully.', ephemeral: true });
+    },
+};
